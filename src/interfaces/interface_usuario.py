@@ -1,4 +1,5 @@
 from src.models.conta import Conta
+from decimal import Decimal
 
 
 class InterfaceUsuario:
@@ -32,8 +33,9 @@ class InterfaceUsuario:
                 if operacao == '1':
                     print(f"Seu saldo é: R${self.conta.get_saldo():.2f}")
                 elif operacao == '2':
-                    valor = float(input('Digite o valor que deseja '
-                                        'depositar: R$'))
+                    valor_str = input('Digite o valor que deseja '
+                                      'depositar: R$')
+                    valor = Decimal(valor_str.replace(',', '.'))
                     self.conta.depositar(valor)
                     print(f'Saldo atual: R${self.conta.get_saldo():.2f}')
                 elif operacao == '3':

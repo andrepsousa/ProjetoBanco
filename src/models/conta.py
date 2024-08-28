@@ -1,4 +1,5 @@
 import re
+from decimal import Decimal
 import psycopg2  # noqa: F401
 from psycopg2 import sql  # noqa: F401
 from src.database import (
@@ -11,16 +12,19 @@ from src.database import (
 class Conta:
 
     taxa = 0.50
-    plano_mensal = 10
+    plano_mensal = Decimal('10.00')
     contas = {}
     chaves_pix = {}
 
     def __init__(self, numero, titular, saldo=0):
         self._numero = numero
         self.titular = titular
-        self.__saldo = saldo
+        self.__saldo = Decimal(str(saldo))
         if not self.__conta_existe():
-            criar_conta_db(self._numero, self.titular, self.__saldo)
+            conn = conectar_banco()
+            if conn:
+                criar_conta_db(conn, self._numero, self.titular, self.__saldo)
+                conn.close()
         Conta.contas[self._numero] = self
         self.__historico = []
         self.__plano_assinado = False
@@ -31,12 +35,12 @@ class Conta:
         conn = conectar_banco()
         if conn:
             try:
-                cursor = conn.cursor()
-                cursor.execute(
-                    "SELECT 1 FROM contas WHERE numero = %s", (self._numero))
-                existe = cursor.fetchone() is not None
+                with conn.cursor() as cursor:
+                    cursor.execute(
+                        "SELECT 1 FROM contas WHERE numero = %s",
+                        (self._numero,))
+                    existe = cursor.fetchone() is not None
                 cursor.close()
-                conn.close()
                 return existe
             except Exception as banco:
                 print(f'Erro ao verificar conta: {banco}')
@@ -49,11 +53,11 @@ class Conta:
     def set_titular(self, titular):
         self.titular = titular
 
-    def get_saldo(self):
+    def get_saldo(self) -> Decimal:
         return self.__saldo
 
-    def set_saldo(self, valor):
-        self.__saldo = valor
+    def set_saldo(self, valor: Decimal) -> None:
+        self.__saldo = Decimal(str(valor))
 
     def mensalidade(self):
         if not self.__plano_assinado:
@@ -77,13 +81,14 @@ class Conta:
     def saldo(self):
         print(f'Saldo: R${self.__saldo}')
 
-    def transacao(self, tipo_transacao, valor):
+    def transacao(self, tipo_transacao: str, valor: Decimal) -> None:
         saldo_atual = self.get_saldo()
-        self.__historico.append((tipo_transacao, valor, saldo_atual))
+        self.__historico.append(
+            (tipo_transacao, Decimal(str(valor)), saldo_atual))
         (registrar_transacao_db(self._numero, tipo_transacao, valor,
                                 saldo_atual))
 
-    def extrato(self):
+    def extrato(self) -> None:
         if not self.__plano_assinado:
             saldo_atual = self.get_saldo() - Conta.taxa
             self.set_saldo(saldo_atual)
@@ -93,12 +98,15 @@ class Conta:
         for transacao in self.__historico:
             if isinstance(transacao, tuple) and len(transacao) == 3:
                 tipo_transacao, valor, saldo = transacao
+                valor = Decimal(str(valor))
+                saldo = Decimal(str(saldo))
                 print(f'Tipo: {tipo_transacao} | '
                       f'Valor: R${valor:.2f} | Saldo: R${saldo:.2f}')
 
     def depositar(self, valor):
         if valor > 0:
-            self.set_saldo(self.get_saldo() + valor)
+            valor_decimal = Decimal(str(valor))
+            self.set_saldo(self.get_saldo() + valor_decimal)
             print('Depósito realizado com sucesso!')
             self.transacao('Depósito', valor)
         else:

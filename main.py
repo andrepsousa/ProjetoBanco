@@ -21,7 +21,7 @@ def main():
         conta = Conta(conta_data['numero'], conta_data['titular'],
                       conta_data['saldo'])
     else:
-        criar_conta_db(123, 'Balde', 500)
+        criar_conta_db(conn, 123, 'Balde', 500)
         conta = Conta(123, 'Balde', 500)
 
     menu = InterfaceUsuario(conta)
