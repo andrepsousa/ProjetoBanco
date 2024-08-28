@@ -1,0 +1,8 @@
+.env
+src/database/__init__.py
+
+venv/
+env_banco/
+
+*.pyc
+__pycache__/
