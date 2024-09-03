@@ -161,11 +161,14 @@ class Conta:
                         "SELECT * FROM contas WHERE numero = %s", (numero,))
                     resultado = cursor.fetchone()
                     if resultado:
+                        print(f'Conta encontrada: {resultado}')
                         return Conta(
                             numero=resultado[0],
                             titular=resultado[1],
                             saldo=Decimal(resultado[2])
                         )
+                    else:
+                        print('Conta não encontrada.')
         except Exception as banco:
             print(f"Erro ao buscar conta: {banco}")
         finally:
@@ -185,18 +188,15 @@ class Conta:
             print('Saldo insuficiente ou valor inválido para saque.')
 
     def pix(self, valor: Decimal, conta_destino: 'Conta') -> None:
-        if not isinstance(conta_destino, Conta):
-            print("Erro: conta_destino deve ser uma instância da "
-                  "classe Conta.")
-            return
         valor = Decimal(str(valor))
         saldo_atual = self.get_saldo()
         if saldo_atual >= valor:
             saldo_atual -= valor
             self.set_saldo(saldo_atual)
             self.transacao('PIX', valor)
-            conta_destino.depositar(valor)
-            print("PIX realizado com sucesso!")
+            if isinstance(conta_destino, Conta):
+                conta_destino.depositar(valor)
+                print('PIX realizado com sucesso!')
         else:
             print("Saldo insuficiente.")
 
