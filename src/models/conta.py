@@ -166,8 +166,8 @@ class Conta:
                             titular=resultado[1],
                             saldo=Decimal(resultado[2])
                         )
-        except Exception as e:
-            print(f"Erro ao buscar conta: {e}")
+        except Exception as banco:
+            print(f"Erro ao buscar conta: {banco}")
         finally:
             if conn:
                 conn.close()
@@ -185,6 +185,10 @@ class Conta:
             print('Saldo insuficiente ou valor inválido para saque.')
 
     def pix(self, valor: Decimal, conta_destino: 'Conta') -> None:
+        if not isinstance(conta_destino, Conta):
+            print("Erro: conta_destino deve ser uma instância da "
+                  "classe Conta.")
+            return
         valor = Decimal(str(valor))
         saldo_atual = self.get_saldo()
         if saldo_atual >= valor:
