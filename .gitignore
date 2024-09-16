@@ -5,4 +5,16 @@ venv/
 env_banco/
 
 *.pyc
+*.py[cod]
+*$py.class
 __pycache__/
+.vscode/*
+.pytest_cache
+
+#django
+*.log
+*.pot
+*.pyc
+__pycache__
+db.sqlite3
+media
