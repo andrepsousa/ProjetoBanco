@@ -1,8 +1,7 @@
 .env
 src/database/__init__.py
-
 venv/
-env_banco/
+venv
 
 *.pyc
 *.py[cod]
