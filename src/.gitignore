@@ -1,0 +1,46 @@
+.env
+src/database/__init__.py
+
+venv/
+env_banco/
+
+*.pyc
+*.py[cod]
+*$py.class
+__pycache__/
+.vscode/*
+.pytest_cache
+
+#django
+*.log
+*.pot
+*.pyc
+__pycache__
+db.sqlite3
+media
+
+# Geral para ambientes e pacotes
+*.egg-info/
+*.eggs/
+*.cache/
+*.pyo
+.Python
+
+# Logs e outros arquivos temporários
+*.log
+*.pot
+*.coverage
+.coverage.*
+.coverage-html/
+.tox/
+dist/
+build/
+htmlcov/
+
+# Banco de dados e migrações locais
+*.db
+*.sqlite3
+migrations/
+
+# Para garantir que arquivos relacionados ao PostgreSQL não sejam versionados
+src/database/*.sql
