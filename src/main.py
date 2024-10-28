@@ -1,7 +1,7 @@
-from src.models.conta import Conta
+from models.conta import Conta
 from decimal import Decimal
-from src.interfaces.interface_usuario import InterfaceUsuario
-from src.database.__init__ import (
+from interfaces.interface_usuario import InterfaceUsuario
+from database.__init__ import (
     criar_conta_db,
     buscar_contas,
     conectar_banco,

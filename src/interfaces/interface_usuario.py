@@ -1,4 +1,4 @@
-from src.models.conta import Conta
+from models.conta import Conta
 from decimal import Decimal
 
 

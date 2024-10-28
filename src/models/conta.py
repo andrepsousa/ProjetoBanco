@@ -1,7 +1,7 @@
 import re
 from decimal import Decimal
-import psycopg2  # noqa: F401
-from src.database import conectar_banco, criar_conta_db, registrar_transacao_db
+import psycopg2
+from database import conectar_banco, criar_conta_db, registrar_transacao_db
 from typing import Optional
 
 
